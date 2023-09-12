@@ -93,24 +93,24 @@ class EditorJsColumns {
 		return [
 			{
 				icon : "2",
-				label : "2 Columns",
+				label : "2-column layout",
 				onActivate : () => {this._updateCols(2)}
 			},
 			{
 				icon : "3",
-				label : "3 Columns",
+				label : "3-column layout",
 				onActivate : () => {this._updateCols(3)}
 			},
 			{
 				icon : "R",
-				label : "Roll Colls",
-				onActivate : () => {this._rollCols()}
+				label : "Rearrange columns",
+				onActivate : () => {this._rearrangeCols()}
 			},
 			]
 	}
 
 
-	_rollCols() {
+	_rearrangeCols() {
 		// this shifts or "rolls" the columns
 		this.data.cols.unshift(this.data.cols.pop());
 		this.editors.cols.unshift(this.editors.cols.pop());
