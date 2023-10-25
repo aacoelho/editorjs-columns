@@ -92,17 +92,17 @@ class EditorJsColumns {
 	renderSettings() {
 		return [
 			{
-				icon : "2",
+				icon : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 641 640"><path d="M65 174h232.727v292H65V174Zm279.273 0H577v292H344.273V174Z" fill="#5C6B7A" fill-rule="nonzero"/></svg>`,
 				label : "2-column layout",
 				onActivate : () => {this._updateCols(2)}
 			},
 			{
-				icon : "3",
+				icon : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 641 640"><path d="M30 175h162.96v292H30V175Zm209.52 0h162.96v292H239.52V175Zm209.52 0H612v292H449.04V175Z" fill="#5C6B7A" fill-rule="nonzero"/></svg>`,
 				label : "3-column layout",
 				onActivate : () => {this._updateCols(3)}
 			},
 			{
-				icon : "R",
+				icon : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M319.5 87.273V0L203.25 116.364 319.5 232.727v-87.272c96.342 0 174.375 78.109 174.375 174.545 0 29.527-7.41 57.164-20.198 81.6l42.43 42.473C538.632 408 552 365.673 552 320c0-128.582-104.044-232.727-232.5-232.727Zm0 407.272c-96.342 0-174.375-78.109-174.375-174.545 0-29.527 7.41-57.164 20.198-81.6l-42.43-42.473C100.368 232 87 274.327 87 320c0 128.582 104.044 232.727 232.5 232.727V640l116.25-116.364L319.5 407.273v87.272Z" fill="#5C6B7A" fill-rule="nonzero"/></svg>`,
 				label : "Rearrange columns",
 				onActivate : () => {this._rearrangeCols()}
 			},
