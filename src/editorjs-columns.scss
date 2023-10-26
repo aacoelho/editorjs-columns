@@ -1,22 +1,27 @@
 /* REQUIRED STYLES */
+$white: #ffffff;
+$ligth-gray: #d3dce6;
 
 .ce-editorjsColumns_col {
-  flex: 50%;
-
-  border: 1px solid #eee;
-  border-radius: 5px;
+  flex: 1 1 0;
+  background-color: $white;
+  border: 1px solid $ligth-gray;
+  border-radius: 6px;
   gap: 10px;
   padding-top: 10px;
+  min-width: 0;
 }
 
 .ce-editorjsColumns_col:focus-within {
-  box-shadow: 0 6px 18px #e8edfa80;
+  box-shadow:
+    0 -1px 1px 0 rgba(0, 0, 0, 0.02),
+    0 2px 6px 0 rgba(0, 0, 0, 0.12);
 }
 
 .ce-editorjsColumns_wrapper {
   display: flex;
   width: 100%;
-  gap: 10px;
+  gap: 16px;
   margin-bottom: 10px;
   flex-direction: row;
 
