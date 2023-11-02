@@ -227,7 +227,8 @@ class EditorJsColumns {
 			// }
 			// else 
 			if (event.key === "Enter") {
-				event.preventDefault();
+				// Applies behaviour of current block
+				// event.preventDefault(); 
 				event.stopImmediatePropagation();
 				event.stopPropagation();
 				
