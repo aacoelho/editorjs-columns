@@ -34,9 +34,9 @@ class EditorJsColumns {
 		this.readOnly = readOnly;
 		this.config = config || {}
 
-		console.log(this.config)
-
-		console.log(this.config.EditorJsLibrary)
+    // TODO: may not be needed after all
+    window.api = api;
+    window.config = config;
 
 		this._CSS = {
 			block: this.api.styles.block,
@@ -47,8 +47,6 @@ class EditorJsColumns {
 			this.onKeyUp = this.onKeyUp.bind(this);
 		}
 		
-
-
 		this._data = {};
 
 		this.editors = {};
@@ -74,8 +72,8 @@ class EditorJsColumns {
 
 
 	onKeyUp(e) {
-		console.log(e)
-		console.log("heyup")
+		// console.log(e)
+		// console.log("heyup")
 		if (e.code !== "Backspace" && e.code !== "Delete") {
 			return;
 		}
@@ -168,7 +166,7 @@ class EditorJsColumns {
 			let editor_col_id = uuidv4();
 			// console.log("generating: ", editor_col_id);
 			col.id = editor_col_id;
-
+      // console.log('col: ' + editor_col_id)
 			this.colWrapper.appendChild(col);
 
 			let editorjs_instance = new this.config.EditorJsLibrary({
@@ -178,9 +176,19 @@ class EditorJsColumns {
 				data: this.data.cols[index],
 				readOnly: this.readOnly,
 				minHeight: 50,
+        onChange: function(api, event) {
+          let selection = document.getSelection();
+          if(selection != undefined && selection.anchorNode != undefined) {
+            // TODO: closest node might not be present
+            let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
+            // console.log('window.active_column_index(write) ' + column.classList[1].slice(-1));
+            window.active_column_index = column.classList[1].slice(-1);
+          }
+        }
 			});
 
 			this.editors.cols.push(editorjs_instance);
+      console.log('_rerender:' + this.editors.cols)
 		}
 	}
 
@@ -254,7 +262,6 @@ class EditorJsColumns {
 			this.editors.cols[index].destroy();
 		}
 
-		// console.log(this.editors.cols);
 		this.editors.cols = []; //empty the array of editors
 		// console.log(this.editors.cols);
 
@@ -279,17 +286,33 @@ class EditorJsColumns {
 				data: this.data.cols[index],
 				readOnly: this.readOnly,
 				minHeight: 50,
+        onChange: function(api, event) {
+          let selection = document.getSelection();
+          if(selection != undefined && selection.anchorNode != undefined) {
+            // TODO: closest node might not be present
+            let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
+            console.log('window.active_column_index (write): ' + column.classList[1].slice(-1));
+            window.active_column_index = column.classList[1].slice(-1);
+          }
+        }
 			});
 
 			this.editors.cols.push(editorjs_instance);
-			// console.log("End column, ", index);
 		}
 		return this.colWrapper;
 	}
 
 	async save() {
 		if(!this.readOnly){
-			// console.log("Saving");
+      let current_block_index = window.api.blocks.getCurrentBlockIndex();
+      let current_block = window.api.blocks.getBlockByIndex(current_block_index);
+      console.log('Now saving: ' + current_block.name + ' with id: ' + current_block.id);
+      if(current_block.id == window.current_block_id) {
+        console.log('Found match: ' + current_block.id + ' at columns (instance) index: ' + current_block_index);
+        window.editors = this.editors;
+      } else {
+        console.log('Did not find match: ' + window.current_block_id + ' != ' + current_block.id + 'at columns (instance) index: ' + current_block_index);
+      }
 			for (let index = 0; index < this.editors.cols.length; index++) {
 				let colData = await this.editors.cols[index].save();
 				this.data.cols[index] = colData;
