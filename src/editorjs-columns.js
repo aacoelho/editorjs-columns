@@ -26,18 +26,12 @@ class EditorJsColumns {
 	}
 
 
-	constructor({ data, config, api, readOnly }) {
-		// console.log("API")
-		// console.log(api)
+	constructor({ data, block, config, api, readOnly }) {
 		// start by setting up the required parts
 		this.api = api;
+
 		this.readOnly = readOnly;
 		this.config = config || {}
-
-    // TODO: may not be needed after all
-    window.api = api;
-    window.config = config;
-
 		this._CSS = {
 			block: this.api.styles.block,
 			wrapper: "ce-EditorJsColumns",
@@ -57,6 +51,8 @@ class EditorJsColumns {
 
 		this.data = data;
 
+    this.block = block;
+
 		if (!Array.isArray(this.data.cols)) {
 			this.data.cols = [];
 			this.editors.numberOfColumns = 2;
@@ -72,8 +68,6 @@ class EditorJsColumns {
 
 
 	onKeyUp(e) {
-		// console.log(e)
-		// console.log("heyup")
 		if (e.code !== "Backspace" && e.code !== "Delete") {
 			return;
 		}
@@ -140,13 +134,11 @@ class EditorJsColumns {
 		if (num == 3) {
 			this.editors.numberOfColumns = 3;
 			this._rerender();
-			// console.log(3);
 		}
 	}
 
 	async _rerender() {
 		await this.save();
-		// console.log(this.colWrapper);
 
 		for (let index = 0; index < this.editors.cols.length; index++) {
 			this.editors.cols[index].destroy();
@@ -155,18 +147,16 @@ class EditorJsColumns {
 
 		this.colWrapper.innerHTML = "";
 
-		// console.log("Building the columns");
 
 		for (let index = 0; index < this.editors.numberOfColumns; index++) {
-			// console.log("Start column, ", index);
 			let col = document.createElement("div");
 			col.classList.add("ce-editorjsColumns_col");
 			col.classList.add("editorjs_col_" + index);
 
 			let editor_col_id = uuidv4();
-			// console.log("generating: ", editor_col_id);
+
 			col.id = editor_col_id;
-      // console.log('col: ' + editor_col_id)
+
 			this.colWrapper.appendChild(col);
 
 			let editorjs_instance = new this.config.EditorJsLibrary({
@@ -179,39 +169,25 @@ class EditorJsColumns {
         onChange: function(api, event) {
           let selection = document.getSelection();
           if(selection != undefined && selection.anchorNode != undefined) {
-            // TODO: closest node might not be present
-            let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
-            // console.log('window.active_column_index(write) ' + column.classList[1].slice(-1));
-            window.active_column_index = column.classList[1].slice(-1);
+            if(selection.anchorNode.closest != undefined) {
+              let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
+              window.active_column_index = column.classList[1].slice(-1);
+            }
           }
         }
 			});
 
 			this.editors.cols.push(editorjs_instance);
-      console.log('_rerender:' + this.editors.cols)
 		}
 	}
 
 	render() {
 
 		// This is needed to prevent the enter / tab keys - it globally removes them!!!
-
-
 		// // it runs MULTIPLE times. - this is not good, but works for now
-
-
-
-
-
-
-		// console.log("Generating Wrapper");
-
-		// console.log(this.api.blocks.getCurrentBlockIndex());
 
 		this.colWrapper = document.createElement("div");
 		this.colWrapper.classList.add("ce-editorjsColumns_wrapper");
-
-
 
 		// astops the double paste issue
 		this.colWrapper.addEventListener('paste', (event) => {
@@ -219,42 +195,20 @@ class EditorJsColumns {
 			event.stopPropagation();
 		}, true);   
 
-
-
 		this.colWrapper.addEventListener('keydown', (event) => {
-
-			// if (event.key === "Enter" && event.altKey) {
-			// 	console.log("ENTER ALT Captured")
-			// 	console.log(event.target)
-
-			// 	// let b = event.target.dispatchEvent(new KeyboardEvent('keyup',{'key':'a'}));
-
-			// 	event.target.innerText += "Aß"
-
-			// 	// console.log(b)
-			// }
-			// else 
 			if (event.key === "Enter") {
 				// Applies behaviour of current block
 				// event.preventDefault(); 
 				event.stopImmediatePropagation();
 				event.stopPropagation();
-				
-				// console.log("ENTER Captured")
-				// this.api.blocks.insertNewBlock({type : "alert"});
-				// console.log("Added Block")
 			}
 			if (event.key === "Tab") {
 				// event.stopImmediatePropagation();
 				event.preventDefault();
 				event.stopImmediatePropagation();
 				event.stopPropagation();
-				
-				// console.log("TAB Captured")
 			}
 		});
-
-
 
 
 
@@ -263,18 +217,13 @@ class EditorJsColumns {
 		}
 
 		this.editors.cols = []; //empty the array of editors
-		// console.log(this.editors.cols);
-
-		// console.log("Building the columns");
 
 		for (let index = 0; index < this.editors.numberOfColumns; index++) {
-			// console.log("Start column, ", index);
 			let col = document.createElement("div");
 			col.classList.add("ce-editorjsColumns_col");
 			col.classList.add("editorjs_col_" + index);
 
 			let editor_col_id = uuidv4();
-			// console.log("generating: ", editor_col_id);
 			col.id = editor_col_id;
 
 			this.colWrapper.appendChild(col);
@@ -289,10 +238,10 @@ class EditorJsColumns {
         onChange: function(api, event) {
           let selection = document.getSelection();
           if(selection != undefined && selection.anchorNode != undefined) {
-            // TODO: closest node might not be present
-            let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
-            console.log('window.active_column_index (write): ' + column.classList[1].slice(-1));
-            window.active_column_index = column.classList[1].slice(-1);
+            if(selection.anchorNode.closest != undefined) {
+              let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
+              window.active_column_index = column.classList[1].slice(-1);
+            }
           }
         }
 			});
@@ -304,15 +253,10 @@ class EditorJsColumns {
 
 	async save() {
 		if(!this.readOnly){
-      let current_block_index = window.api.blocks.getCurrentBlockIndex();
-      let current_block = window.api.blocks.getBlockByIndex(current_block_index);
-      console.log('Now saving: ' + current_block.name + ' with id: ' + current_block.id);
-      if(current_block.id == window.current_block_id) {
-        console.log('Found match: ' + current_block.id + ' at columns (instance) index: ' + current_block_index);
+      if(this.block.id == window.current_block_id) {
         window.editors = this.editors;
-      } else {
-        console.log('Did not find match: ' + window.current_block_id + ' != ' + current_block.id + 'at columns (instance) index: ' + current_block_index);
       }
+
 			for (let index = 0; index < this.editors.cols.length; index++) {
 				let colData = await this.editors.cols[index].save();
 				this.data.cols[index] = colData;
