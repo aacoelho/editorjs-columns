@@ -73,6 +73,7 @@
     <script src="https://cdn.jsdelivr.net/npm/editorjs-alert@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-codeflask@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-nested-checklist@latest"></script>
+    <script src="https://cdn.jsdelivr.net/gh/aacoelho/link@master/dist/bundle.js"></script>
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-paragraph-linebreakable"></script> -->
 
@@ -92,6 +93,7 @@
       alert : Alert,
       // paragraph : editorjsParagraphLinebreakable,
       delimiter : Delimiter,
+      weblink: LinkTool,
 
       columns : {
         class : editorjsColumns,
@@ -99,7 +101,8 @@
           tools : {
             header: Header,
             alert : Alert,
-            delimiter : Delimiter
+            delimiter : Delimiter,
+            weblink: LinkTool,
           },
           EditorJsLibrary : EditorJS //ref EditorJS - This means only one global thing
         }
