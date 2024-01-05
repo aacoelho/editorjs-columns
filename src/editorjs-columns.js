@@ -190,10 +190,10 @@ class EditorJsColumns {
 		this.colWrapper.classList.add("ce-editorjsColumns_wrapper");
 
 		// astops the double paste issue
-		this.colWrapper.addEventListener('paste', (event) => {
-			// event.preventDefault();
-			event.stopPropagation();
-		}, true);   
+		// this.colWrapper.addEventListener('paste', (event) => {
+		// 	// event.preventDefault();
+		// 	event.stopPropagation();
+		// }, true);   
 
 		this.colWrapper.addEventListener('keydown', (event) => {
 			if (event.key === "Enter") {
