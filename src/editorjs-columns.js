@@ -16,6 +16,7 @@ import Swal from "sweetalert2";
 
 import icon from "./editorjs-columns.svg";
 import style from "./editorjs-columns.scss";
+import DragDrop from "editorjs-drag-drop";
 
 // import EditorJS from '@editorjs/editorjs'; // required for npm mode
 
@@ -166,6 +167,21 @@ class EditorJsColumns {
 				data: this.data.cols[index],
 				readOnly: this.readOnly,
 				minHeight: 50,
+				onReady: function() {
+					// Initialize DragDrop on column editors
+					setTimeout(() => {
+						try {
+							// Check if editor instance is properly initialized
+							if (editorjs_instance && editorjs_instance.blocks) {
+								new DragDrop(editorjs_instance, "4px solid #E9C6FF");
+							} else {
+								console.warn('Editor instance not ready for DragDrop initialization');
+							}
+						} catch (error) {
+							console.warn('DragDrop plugin failed to initialize:', error);
+						}
+					}, 1000);
+				},
         onChange: function(api, event) {
           let selection = document.getSelection();
           if(selection != undefined && selection.anchorNode != undefined) {
@@ -235,6 +251,21 @@ class EditorJsColumns {
 				data: this.data.cols[index],
 				readOnly: this.readOnly,
 				minHeight: 50,
+				onReady: function() {
+					// Initialize DragDrop on column editors
+					setTimeout(() => {
+						try {
+							// Check if editor instance is properly initialized
+							if (editorjs_instance && editorjs_instance.blocks) {
+								new DragDrop(editorjs_instance, "4px solid #E9C6FF");
+							} else {
+								console.warn('Editor instance not ready for DragDrop initialization');
+							}
+						} catch (error) {
+							console.warn('DragDrop plugin failed to initialize:', error);
+						}
+					}, 1000);
+				},
         onChange: function(api, event) {
           let selection = document.getSelection();
           if(selection != undefined && selection.anchorNode != undefined) {

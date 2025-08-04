@@ -75,6 +75,7 @@
     <script src="https://cdn.jsdelivr.net/npm/editorjs-alert@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-codeflask@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-nested-checklist@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/editorjs-drag-drop@1.1.16"></script>
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/@calumk/editorjs-paragraph-linebreakable"></script> -->
     <script src="../extra/editorjs-paragraph-linebreakable.bundle.js"></script>
@@ -105,6 +106,7 @@
       paragraph : {class: editorjsParagraphLinebreakable, inlineToolbar: true},
       delimiter : Delimiter,
 
+      // Temporarily commenting out columns to test DragDrop
       columns : {
         class : editorjsColumns,
         config : {
@@ -116,7 +118,7 @@
 
     
 
-    editor = new EditorJS({
+    const editor = new EditorJS({
       readOnly: false,
       holder: 'editorjs',
       tools : main_tools,
@@ -124,6 +126,14 @@
 
 
       onReady: function(){
+        console.log("Editor ready, delaying DragDrop initialization for column editors")
+        
+        // Delay DragDrop initialization to ensure column editors are fully loaded
+        setTimeout(() => {
+          new DragDrop(editor, "4px solid #E9C6FF");
+          console.log("DragDrop initialized after delay")
+        }, 1000);
+
         console.log("Delaying Save to launch Column Editors")
         
         setTimeout(() => {
