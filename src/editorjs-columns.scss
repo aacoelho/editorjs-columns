@@ -85,3 +85,8 @@ These styles will also affect the parent editor!!!!!!
   /* background:#f00 !important; */
   z-index: auto !important;
 }
+
+// Disable setting
+.ce-popover-item--disabled .ce-popover-item__icon svg {
+  fill: var(--color-text-secondary);
+}
