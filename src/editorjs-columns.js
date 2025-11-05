@@ -91,21 +91,27 @@ class EditorJsColumns {
 	renderSettings() {
 		return [
 			{
-				icon : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 641 640"><path d="M65 174h232.727v292H65V174Zm279.273 0H577v292H344.273V174Z" fill="#000000" fill-rule="nonzero"/></svg>`,
-				label : this.api.i18n.t("2 Columns"),
-				onActivate : () => {this._updateCols(2)}
+				icon : `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path></svg>`,
+				name: `add-column`,
+				label : this.api.i18n.t("Add column"),
+				isDisabled: this.editors.numberOfColumns === 5,
+				onActivate : () => {this._updateCols(1)}
 			},
 			{
-				icon : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 641 640"><path d="M30 175h162.96v292H30V175Zm209.52 0h162.96v292H239.52V175Zm209.52 0H612v292H449.04V175Z" fill="#000000" fill-rule="nonzero"/></svg>`,
-				label : this.api.i18n.t("3 Columns"),
-				onActivate : () => {this._updateCols(3)}
+				icon : `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128Z"></path></svg>`,
+				name: `remove-column`,
+				label : this.api.i18n.t("Remove column"),
+				isDisabled: this.editors.numberOfColumns === 1,
+				onActivate : () => {this._updateCols(-1)}
 			},
 			{
-				icon : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M319.5 87.273V0L203.25 116.364 319.5 232.727v-87.272c96.342 0 174.375 78.109 174.375 174.545 0 29.527-7.41 57.164-20.198 81.6l42.43 42.473C538.632 408 552 365.673 552 320c0-128.582-104.044-232.727-232.5-232.727Zm0 407.272c-96.342 0-174.375-78.109-174.375-174.545 0-29.527 7.41-57.164 20.198-81.6l-42.43-42.473C100.368 232 87 274.327 87 320c0 128.582 104.044 232.727 232.5 232.727V640l116.25-116.364L319.5 407.273v87.272Z" fill="#000000" fill-rule="nonzero"/></svg>`,
-				label : this.api.i18n.t("Rearrange Columns"),
+				icon : `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M88,104H40a8,8,0,0,1-8-8V48a8,8,0,0,1,13.66-5.66L64,60.7a95.42,95.42,0,0,1,66-26.76h.53a95.36,95.36,0,0,1,67.07,27.33,8,8,0,0,1-11.18,11.44,79.52,79.52,0,0,0-55.89-22.77h-.45A79.48,79.48,0,0,0,75.35,72L93.66,90.34A8,8,0,0,1,88,104Zm128,48H168a8,8,0,0,0-5.66,13.66L180.65,184a79.48,79.48,0,0,1-54.72,22.09h-.45a79.52,79.52,0,0,1-55.89-22.77,8,8,0,1,0-11.18,11.44,95.36,95.36,0,0,0,67.07,27.33H126a95.42,95.42,0,0,0,66-26.76l18.36,18.36A8,8,0,0,0,224,208V160A8,8,0,0,0,216,152Z"></path></svg>`,
+				name: `roll-columns`,
+				label : this.api.i18n.t("Roll columns"),
+				isDisabled: this.editors.numberOfColumns === 1,
 				onActivate : () => {this._rollColumns()}
 			},
-			]
+		]
 	}
 
 
@@ -117,31 +123,39 @@ class EditorJsColumns {
 	}
 
 	async _updateCols(num) {
-		// Should probably update to make number dynamic... but this will do for now
-		if (num == 2) {
-			if (this.editors.numberOfColumns == 3) {
-				let resp = await Swal.fire({
-					title: this.api.i18n.t("Are you sure?"),
-					text: this.api.i18n.t("This will delete Column 3!"),
-					icon: "warning",
-					showCancelButton: true,
-					cancelButtonText: this.api.i18n.t("Cancel"),
-					confirmButtonColor: "#3085d6",
-					cancelButtonColor: "#d33",
-					confirmButtonText: this.api.i18n.t("Yes, delete it!"),
-				});
-
-				if (resp.isConfirmed) {
-					this.editors.numberOfColumns = 2;
-					this.data.cols.pop();
-					this.editors.cols.pop();
-					this._rerender();
-				}
+		const newNumberOfColumns = this.editors.numberOfColumns + num;
+		
+		// Add column
+		if (num === 1) {
+			if(newNumberOfColumns > 5) {
+				return;
 			}
-		}
-		if (num == 3) {
-			this.editors.numberOfColumns = 3;
+			this.editors.numberOfColumns = newNumberOfColumns;
 			this._rerender();
+		}
+		// Remove column
+		if (num === -1) {
+			if(newNumberOfColumns < 1) {
+				return;
+			}
+
+			let resp = await Swal.fire({
+				title: this.api.i18n.t("Are you sure?"),
+				text: this.api.i18n.t(`This will delete the last column!`),
+				icon: "warning",
+				showCancelButton: true,
+				cancelButtonText: this.api.i18n.t("Cancel"),
+				confirmButtonColor: "#3085d6",
+				cancelButtonColor: "#d33",
+				confirmButtonText: this.api.i18n.t("Yes, delete it!"),
+			});
+
+			if (resp.isConfirmed) {
+				this.editors.numberOfColumns = newNumberOfColumns;
+				this.data.cols.pop();
+				this.editors.cols.pop();
+				this._rerender();
+			}
 		}
 	}
 
