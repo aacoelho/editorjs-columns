@@ -169,6 +169,14 @@ class EditorJsColumns {
 
 		this.colWrapper.innerHTML = "";
 
+		// Add click listener to track active column
+		this.colWrapper.addEventListener('click', (event) => {
+			let column = event.target.closest('.ce-editorjsColumns_col');
+			if (column) {
+				let columnIndex = column.classList[1].slice(-1);
+				window.active_column_index = columnIndex;
+			}
+		});
 
 		for (let index = 0; index < this.editors.numberOfColumns; index++) {
 			let col = document.createElement("div");
@@ -193,23 +201,34 @@ class EditorJsColumns {
           if(selection != undefined && selection.anchorNode != undefined) {
             if(selection.anchorNode.closest != undefined) {
               let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
-              window.active_column_index = column.classList[1].slice(-1);
+              if(column) {
+                window.active_column_index = column.classList[1].slice(-1);
+              }
             }
           }
         }
 			});
 
 			this.editors.cols.push(editorjs_instance);
+			window.editors = this.editors;
 		}
 	}
 
 	render() {
-
 		// This is needed to prevent the enter / tab keys - it globally removes them!!!
 		// // it runs MULTIPLE times. - this is not good, but works for now
 
 		this.colWrapper = document.createElement("div");
 		this.colWrapper.classList.add("ce-editorjsColumns_wrapper");
+
+		// Add click listener to track active column
+		this.colWrapper.addEventListener('click', (event) => {
+			let column = event.target.closest('.ce-editorjsColumns_col');
+			if (column) {
+				let columnIndex = column.classList[1].slice(-1);
+				window.active_column_index = columnIndex;
+			}
+		});
 
 		// astops the double paste issue
 		// this.colWrapper.addEventListener('paste', (event) => {
@@ -262,13 +281,16 @@ class EditorJsColumns {
           if(selection != undefined && selection.anchorNode != undefined) {
             if(selection.anchorNode.closest != undefined) {
               let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
-              window.active_column_index = column.classList[1].slice(-1);
+              if(column) {
+                window.active_column_index = column.classList[1].slice(-1);
+              }
             }
           }
         }
 			});
 
 			this.editors.cols.push(editorjs_instance);
+			window.editors = this.editors;
 		}
 		return this.colWrapper;
 	}
