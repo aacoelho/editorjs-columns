@@ -122,6 +122,24 @@ class EditorJsColumns {
 		this._rerender();
 	}
 
+	// Multiple Columns blocks share window.active_column_index / window.editors.
+	// Always re-bind them to THIS instance on interaction, otherwise media replace
+	// (and similar) can update the same column index in a different Columns block.
+	_activateColumnFromElement(column) {
+		if (!column) {
+			return;
+		}
+
+		const columnClass = Array.from(column.classList).find((name) => name.indexOf("editorjs_col_") === 0);
+		if (!columnClass) {
+			return;
+		}
+
+		window.active_column_index = columnClass.replace("editorjs_col_", "");
+		window.editors = this.editors;
+		window.current_block_id = this.block.id;
+	}
+
 	async _updateCols(num) {
 		const newNumberOfColumns = this.editors.numberOfColumns + num;
 		
@@ -171,11 +189,7 @@ class EditorJsColumns {
 
 		// Add click listener to track active column
 		this.colWrapper.addEventListener('click', (event) => {
-			let column = event.target.closest('.ce-editorjsColumns_col');
-			if (column) {
-				let columnIndex = column.classList[1].slice(-1);
-				window.active_column_index = columnIndex;
-			}
+			this._activateColumnFromElement(event.target.closest('.ce-editorjsColumns_col'));
 		});
 
 		for (let index = 0; index < this.editors.numberOfColumns; index++) {
@@ -189,6 +203,7 @@ class EditorJsColumns {
 
 			this.colWrapper.appendChild(col);
 
+			const columnsTool = this;
 			let editorjs_instance = new this.config.EditorJsLibrary({
 				defaultBlock: "paragraph",
 				holder: editor_col_id,
@@ -200,10 +215,7 @@ class EditorJsColumns {
           let selection = document.getSelection();
           if(selection != undefined && selection.anchorNode != undefined) {
             if(selection.anchorNode.closest != undefined) {
-              let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
-              if(column) {
-                window.active_column_index = column.classList[1].slice(-1);
-              }
+              columnsTool._activateColumnFromElement(selection.anchorNode.closest('.ce-editorjsColumns_col'));
             }
           }
         }
@@ -223,11 +235,7 @@ class EditorJsColumns {
 
 		// Add click listener to track active column
 		this.colWrapper.addEventListener('click', (event) => {
-			let column = event.target.closest('.ce-editorjsColumns_col');
-			if (column) {
-				let columnIndex = column.classList[1].slice(-1);
-				window.active_column_index = columnIndex;
-			}
+			this._activateColumnFromElement(event.target.closest('.ce-editorjsColumns_col'));
 		});
 
 		// astops the double paste issue
@@ -269,6 +277,7 @@ class EditorJsColumns {
 
 			this.colWrapper.appendChild(col);
 
+			const columnsTool = this;
 			let editorjs_instance = new this.config.EditorJsLibrary({
 				defaultBlock: "paragraph",
 				holder: editor_col_id,
@@ -280,10 +289,7 @@ class EditorJsColumns {
           let selection = document.getSelection();
           if(selection != undefined && selection.anchorNode != undefined) {
             if(selection.anchorNode.closest != undefined) {
-              let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
-              if(column) {
-                window.active_column_index = column.classList[1].slice(-1);
-              }
+              columnsTool._activateColumnFromElement(selection.anchorNode.closest('.ce-editorjsColumns_col'));
             }
           }
         }
