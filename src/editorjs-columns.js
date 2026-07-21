@@ -140,6 +140,17 @@ class EditorJsColumns {
 		window.current_block_id = this.block.id;
 	}
 
+	// pointerdown runs before the Image tool's click handler / openAssetPicker,
+	// so window.editors + active_column_index are correct when the host snapshots
+	// the target block (avoids needing setTimeout in PageContent).
+	_bindColumnActivationListeners() {
+		const activate = (event) => {
+			this._activateColumnFromElement(event.target.closest('.ce-editorjsColumns_col'));
+		};
+		this.colWrapper.addEventListener('pointerdown', activate);
+		this.colWrapper.addEventListener('click', activate);
+	}
+
 	async _updateCols(num) {
 		const newNumberOfColumns = this.editors.numberOfColumns + num;
 		
@@ -187,10 +198,7 @@ class EditorJsColumns {
 
 		this.colWrapper.innerHTML = "";
 
-		// Add click listener to track active column
-		this.colWrapper.addEventListener('click', (event) => {
-			this._activateColumnFromElement(event.target.closest('.ce-editorjsColumns_col'));
-		});
+		this._bindColumnActivationListeners();
 
 		for (let index = 0; index < this.editors.numberOfColumns; index++) {
 			let col = document.createElement("div");
@@ -233,10 +241,7 @@ class EditorJsColumns {
 		this.colWrapper = document.createElement("div");
 		this.colWrapper.classList.add("ce-editorjsColumns_wrapper");
 
-		// Add click listener to track active column
-		this.colWrapper.addEventListener('click', (event) => {
-			this._activateColumnFromElement(event.target.closest('.ce-editorjsColumns_col'));
-		});
+		this._bindColumnActivationListeners();
 
 		// astops the double paste issue
 		// this.colWrapper.addEventListener('paste', (event) => {
