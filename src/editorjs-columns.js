@@ -175,6 +175,7 @@ class EditorJsColumns {
 			if (column) {
 				let columnIndex = column.classList[1].slice(-1);
 				window.active_column_index = columnIndex;
+				window.activeColumnsNestedEditors = this.editors;
 			}
 		});
 
@@ -210,7 +211,7 @@ class EditorJsColumns {
 			});
 
 			this.editors.cols.push(editorjs_instance);
-			window.editors = this.editors;
+			window.activeColumnsNestedEditors = this.editors;
 		}
 	}
 
@@ -227,6 +228,7 @@ class EditorJsColumns {
 			if (column) {
 				let columnIndex = column.classList[1].slice(-1);
 				window.active_column_index = columnIndex;
+				window.activeColumnsNestedEditors = this.editors;
 			}
 		});
 
@@ -290,17 +292,13 @@ class EditorJsColumns {
 			});
 
 			this.editors.cols.push(editorjs_instance);
-			window.editors = this.editors;
+			window.activeColumnsNestedEditors = this.editors;
 		}
 		return this.colWrapper;
 	}
 
 	async save() {
 		if(!this.readOnly){
-      if(this.block.id == window.current_block_id) {
-        window.editors = this.editors;
-      }
-
 			for (let index = 0; index < this.editors.cols.length; index++) {
 				let colData = await this.editors.cols[index].save();
 				this.data.cols[index] = colData;
