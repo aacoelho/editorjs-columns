@@ -80,6 +80,11 @@ class EditorJsColumns {
 		}
 	}
 
+	_activateColumn(columnIndex) {
+		window.activeColumnIndex = columnIndex;
+		window.activeColumnsNestedEditors = this.editors;
+	}
+
 	get CSS() {
 		return {
 			settingsButton: this.api.styles.settingsButton,
@@ -173,9 +178,7 @@ class EditorJsColumns {
 		this.colWrapper.addEventListener('click', (event) => {
 			let column = event.target.closest('.ce-editorjsColumns_col');
 			if (column) {
-				let columnIndex = column.classList[1].slice(-1);
-				window.active_column_index = columnIndex;
-				window.activeColumnsNestedEditors = this.editors;
+				this._activateColumn(column.classList[1].slice(-1));
 			}
 		});
 
@@ -197,17 +200,17 @@ class EditorJsColumns {
 				data: this.data.cols[index],
 				readOnly: this.readOnly,
 				minHeight: 50,
-        onChange: function(api, event) {
-          let selection = document.getSelection();
-          if(selection != undefined && selection.anchorNode != undefined) {
-            if(selection.anchorNode.closest != undefined) {
-              let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
-              if(column) {
-                window.active_column_index = column.classList[1].slice(-1);
-              }
-            }
-          }
-        }
+				onChange: (api, event) => {
+					let selection = document.getSelection();
+					if(selection != undefined && selection.anchorNode != undefined) {
+						if(selection.anchorNode.closest != undefined) {
+							let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
+							if(column) {
+								this._activateColumn(column.classList[1].slice(-1));
+							}
+						}
+					}
+				}
 			});
 
 			this.editors.cols.push(editorjs_instance);
@@ -226,9 +229,7 @@ class EditorJsColumns {
 		this.colWrapper.addEventListener('click', (event) => {
 			let column = event.target.closest('.ce-editorjsColumns_col');
 			if (column) {
-				let columnIndex = column.classList[1].slice(-1);
-				window.active_column_index = columnIndex;
-				window.activeColumnsNestedEditors = this.editors;
+				this._activateColumn(column.classList[1].slice(-1));
 			}
 		});
 
@@ -278,17 +279,17 @@ class EditorJsColumns {
 				data: this.data.cols[index],
 				readOnly: this.readOnly,
 				minHeight: 50,
-        onChange: function(api, event) {
-          let selection = document.getSelection();
-          if(selection != undefined && selection.anchorNode != undefined) {
-            if(selection.anchorNode.closest != undefined) {
-              let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
-              if(column) {
-                window.active_column_index = column.classList[1].slice(-1);
-              }
-            }
-          }
-        }
+				onChange: (api, event) => {
+					let selection = document.getSelection();
+					if(selection != undefined && selection.anchorNode != undefined) {
+						if(selection.anchorNode.closest != undefined) {
+							let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
+							if(column) {
+								this._activateColumn(column.classList[1].slice(-1));
+							}
+						}
+					}
+				}
 			});
 
 			this.editors.cols.push(editorjs_instance);
