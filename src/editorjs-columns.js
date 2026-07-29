@@ -178,7 +178,7 @@ class EditorJsColumns {
 		this.colWrapper.addEventListener('click', (event) => {
 			let column = event.target.closest('.ce-editorjsColumns_col');
 			if (column) {
-				this._activateColumn(column.classList[1].slice(-1));
+				this._activateColumn(column.dataset.columnIndex);
 			}
 		});
 
@@ -186,6 +186,7 @@ class EditorJsColumns {
 			let col = document.createElement("div");
 			col.classList.add("ce-editorjsColumns_col");
 			col.classList.add("editorjs_col_" + index);
+			col.dataset.columnIndex = index;
 
 			let editor_col_id = uuidv4();
 
@@ -206,7 +207,7 @@ class EditorJsColumns {
 						if(selection.anchorNode.closest != undefined) {
 							let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
 							if(column) {
-								this._activateColumn(column.classList[1].slice(-1));
+								this._activateColumn(column.dataset.columnIndex);
 							}
 						}
 					}
@@ -214,7 +215,6 @@ class EditorJsColumns {
 			});
 
 			this.editors.cols.push(editorjs_instance);
-			window.activeColumnsNestedEditors = this.editors;
 		}
 	}
 
@@ -229,7 +229,7 @@ class EditorJsColumns {
 		this.colWrapper.addEventListener('click', (event) => {
 			let column = event.target.closest('.ce-editorjsColumns_col');
 			if (column) {
-				this._activateColumn(column.classList[1].slice(-1));
+				this._activateColumn(column.dataset.columnIndex);
 			}
 		});
 
@@ -266,6 +266,7 @@ class EditorJsColumns {
 			let col = document.createElement("div");
 			col.classList.add("ce-editorjsColumns_col");
 			col.classList.add("editorjs_col_" + index);
+			col.dataset.columnIndex = index;
 
 			let editor_col_id = uuidv4();
 			col.id = editor_col_id;
@@ -285,7 +286,7 @@ class EditorJsColumns {
 						if(selection.anchorNode.closest != undefined) {
 							let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
 							if(column) {
-								this._activateColumn(column.classList[1].slice(-1));
+								this._activateColumn(column.dataset.columnIndex);
 							}
 						}
 					}
@@ -293,7 +294,6 @@ class EditorJsColumns {
 			});
 
 			this.editors.cols.push(editorjs_instance);
-			window.activeColumnsNestedEditors = this.editors;
 		}
 		return this.colWrapper;
 	}
