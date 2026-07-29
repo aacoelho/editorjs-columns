@@ -123,6 +123,7 @@ class EditorJsColumns {
 	_rollColumns() {
 		// this shifts or "rolls" the columns
 		this.data.cols.unshift(this.data.cols.pop());
+		this.editors.cols.unshift(this.editors.cols.pop());
 		this._rerender();
 	}
 
@@ -157,6 +158,7 @@ class EditorJsColumns {
 			if (resp.isConfirmed) {
 				this.editors.numberOfColumns = newNumberOfColumns;
 				this.data.cols.pop();
+				this.editors.cols.pop();
 				this._rerender();
 			}
 		}
