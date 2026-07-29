@@ -123,7 +123,6 @@ class EditorJsColumns {
 	_rollColumns() {
 		// this shifts or "rolls" the columns
 		this.data.cols.unshift(this.data.cols.pop());
-		this.editors.cols.unshift(this.editors.cols.pop());
 		this._rerender();
 	}
 
@@ -158,30 +157,19 @@ class EditorJsColumns {
 			if (resp.isConfirmed) {
 				this.editors.numberOfColumns = newNumberOfColumns;
 				this.data.cols.pop();
-				this.editors.cols.pop();
 				this._rerender();
 			}
 		}
 	}
 
-	async _rerender() {
-		await this.save();
-
+	_destroyColumns() {
 		for (let index = 0; index < this.editors.cols.length; index++) {
 			this.editors.cols[index].destroy();
 		}
 		this.editors.cols = [];
+	}
 
-		this.colWrapper.innerHTML = "";
-
-		// Add click listener to track active column
-		this.colWrapper.addEventListener('click', (event) => {
-			let column = event.target.closest('.ce-editorjsColumns_col');
-			if (column) {
-				this._activateColumn(column.dataset.columnIndex);
-			}
-		});
-
+	_createColumns() {
 		for (let index = 0; index < this.editors.numberOfColumns; index++) {
 			let col = document.createElement("div");
 			col.classList.add("ce-editorjsColumns_col");
@@ -216,6 +204,16 @@ class EditorJsColumns {
 
 			this.editors.cols.push(editorjs_instance);
 		}
+	}
+
+	async _rerender() {
+		await this.save();
+
+		this._destroyColumns();
+
+		this.colWrapper.innerHTML = "";
+
+		this._createColumns();
 	}
 
 	render() {
@@ -254,47 +252,9 @@ class EditorJsColumns {
 			}
 		});
 
+		this._destroyColumns();
 
-
-		for (let index = 0; index < this.editors.cols.length; index++) {
-			this.editors.cols[index].destroy();
-		}
-
-		this.editors.cols = []; //empty the array of editors
-
-		for (let index = 0; index < this.editors.numberOfColumns; index++) {
-			let col = document.createElement("div");
-			col.classList.add("ce-editorjsColumns_col");
-			col.classList.add("editorjs_col_" + index);
-			col.dataset.columnIndex = index;
-
-			let editor_col_id = uuidv4();
-			col.id = editor_col_id;
-
-			this.colWrapper.appendChild(col);
-
-			let editorjs_instance = new this.config.EditorJsLibrary({
-				defaultBlock: "paragraph",
-				holder: editor_col_id,
-				tools: this.config.tools,
-				data: this.data.cols[index],
-				readOnly: this.readOnly,
-				minHeight: 50,
-				onChange: (api, event) => {
-					let selection = document.getSelection();
-					if(selection != undefined && selection.anchorNode != undefined) {
-						if(selection.anchorNode.closest != undefined) {
-							let column = selection.anchorNode.closest('.ce-editorjsColumns_col');
-							if(column) {
-								this._activateColumn(column.dataset.columnIndex);
-							}
-						}
-					}
-				}
-			});
-
-			this.editors.cols.push(editorjs_instance);
-		}
+		this._createColumns();
 		return this.colWrapper;
 	}
 
