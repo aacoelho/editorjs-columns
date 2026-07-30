@@ -127,35 +127,6 @@ class EditorJsColumns {
 		this._rerender();
 	}
 
-	// Multiple Columns blocks share window.active_column_index / window.editors.
-	// Always re-bind them to THIS instance on interaction, otherwise media replace
-	// (and similar) can update the same column index in a different Columns block.
-	_activateColumnFromElement(column) {
-		if (!column) {
-			return;
-		}
-
-		const columnClass = Array.from(column.classList).find((name) => name.indexOf("editorjs_col_") === 0);
-		if (!columnClass) {
-			return;
-		}
-
-		window.active_column_index = columnClass.replace("editorjs_col_", "");
-		window.editors = this.editors;
-		window.current_block_id = this.block.id;
-	}
-
-	// pointerdown runs before the Image tool's click handler / openAssetPicker,
-	// so window.editors + active_column_index are correct when the host snapshots
-	// the target block (avoids needing setTimeout in PageContent).
-	_bindColumnActivationListeners() {
-		const activate = (event) => {
-			this._activateColumnFromElement(event.target.closest('.ce-editorjsColumns_col'));
-		};
-		this.colWrapper.addEventListener('pointerdown', activate);
-		this.colWrapper.addEventListener('click', activate);
-	}
-
 	async _updateCols(num) {
 		const newNumberOfColumns = this.editors.numberOfColumns + num;
 		
@@ -213,7 +184,6 @@ class EditorJsColumns {
 
 			this.colWrapper.appendChild(col);
 
-			const columnsTool = this;
 			let editorjs_instance = new this.config.EditorJsLibrary({
 				defaultBlock: "paragraph",
 				holder: editor_col_id,
